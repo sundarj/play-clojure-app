@@ -2,12 +2,11 @@
   (:require [io.pedestal.http :as http]          
             [io.pedestal.http.route :as route]))
 
-(defn ok
-  ([body]
-    {:status 200 :body body}))
+(defn ok [body]
+  {:status 200 :body body})
 
 (defn bad-request []
-    {:status 400 :body "Bad request"})
+  {:status 400 :body "Bad request"})
 
 (defn not-found []
   {:status 404 :body "Not found"})
