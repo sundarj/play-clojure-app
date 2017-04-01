@@ -23,8 +23,8 @@
         greeting (greeting-for name)
         resp (cond
                (unmentionables name) (not-found)
-               greeting (ok greeting)
-               :else (bad-request))]
+               greeting              (ok greeting)
+               :else                 (bad-request))]
     resp))
 
 (def routes
