@@ -11,12 +11,25 @@
 (def accepted (partial response 202))
 
 (def echo
-  {:name echo
+  {:name :echo
   :enter (fn [context]
            (let [request (:request context)
                  response (ok request)]
              (assoc context :response response)))})
-             
+
+(defonce database (atom {}))
+
+(def database-interceptor
+  {:name :database-interceptor
+  :enter (fn [context]
+           (update context :request assoc :database @database))
+   :leave (fn [context]
+           (if-let [[op & args] (:tx-data context)]
+             (do
+               (apply swap! database op args)
+               (assoc-in context [:request :database] @database))
+             context))})
+
  (def routes
   (route/expand-routes
    #{["/todo"                :post   echo :route-name :list-create]
@@ -40,7 +53,7 @@
 (defn start-dev []
   (reset! server
           (http/start (http/create-server
-                       (assoc service-map ::http/join? false)))))
+                       (assoc service-options ::http/join? false)))))
                        
 (defn stop-dev []
   (http/stop @server))
